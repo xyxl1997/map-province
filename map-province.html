@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html style="height: 100%">
+
+<head>
+    <meta charset="utf-8">
+</head>
+
+<body style="height: 100%; margin: 0">
+    <div id="container" style="height: 100%;"></div>
+    <div style="color: rgb(61, 124, 197);cursor: pointer;position: absolute;left: 5px;top:48%;display: none;" id="back">返回</div>
+    <script type="text/javascript" src="./echarts.min.js"></script>
+    <!-- <script src="http://echarts.baidu.com/build/dist/echarts-all.js"></script> -->
+
+    <!-- <script type="text/javascript" src="http://echarts.baidu.com/gallery/vendors/echarts-gl/echarts-gl.min.js"></script> -->
+    <!-- <script type="text/javascript" src="http://echarts.baidu.com/gallery/vendors/echarts-stat/ecStat.min.js"></script> -->
+    <!-- <script type="text/javascript" src="http://echarts.baidu.com/gallery/vendors/echarts/extension/dataTool.min.js"></script> -->
+    <script type="text/javascript" src="./china.js"></script>
+    <!-- <script type="text/javascript" src="http://echarts.baidu.com/gallery/vendors/echarts/map/js/world.js"></script> -->
+    <!-- <script type="text/javascript" src="https://api.map.baidu.com/api?v=2.0&ak=xfhhaTThl11qYVrqLZii6w8qE5ggnhrY&__ec_v__=20190126"></script> -->
+    <!-- <script type="text/javascript" src="http://echarts.baidu.com/gallery/vendors/echarts/extension/bmap.min.js"></script> -->
+    <!-- <script type="text/javascript" src="http://echarts.baidu.com/gallery/vendors/simplex.js"></script> -->
+    <script type="text/javascript">
+        var dom = document.getElementById("container");
+        var myChart = echarts.init(dom);
+        var backBtn = document.getElementById("back");
+        var cityData = {
+            '吉林': 'jilin',
+            '北京': 'beijing',
+            '天津': 'tianjin',
+            '上海': 'shanghai',
+            '重庆': 'chongqing',
+            '河北': 'hebei',
+            '山西': 'shanxi',
+            '辽宁': 'liaoning',
+            '黑龙江': 'heilongjiang',
+            '江苏': 'jiangsu',
+            '浙江': 'zhejiang',
+            '安徽': 'anhui',
+            '福建': 'fujian',
+            '江西': 'jiangxi',
+            '山东': 'shandong',
+            '河南': 'henan',
+            '湖北': 'hubei',
+            '湖南': 'hunan',
+            '广东': 'guangdong',
+            '海南': 'hainan',
+            '四川': 'sichuan',
+            '贵州': 'guizhou',
+            '云南': 'yunnan',
+            '陕西': 'shanxi1',
+            '甘肃': "gansu",
+            '青海': 'qinghai',
+            '台湾': 'taiwan',
+            '内蒙古': 'neimenggu',
+            '广西': 'guangxi',
+            '西藏': 'xizang',
+            '宁夏': 'ningxia',
+            '新疆': 'xinjiang',
+            '香港': 'xianggang',
+            '澳门': 'aomen'
+        }
+        var option = {
+            tooltip: {
+                trigger: 'item', //提示框的触发类型。
+                formatter: '{b}<br><br>门店数：9<br><br>排名：{c}' //内容格式器可以支持异步回调函数。返回一个你想要提示的字符串就可以了
+            },
+            dataRange: { //值域选择
+                min: 0,
+                max: 1,
+                calculable: false,
+                show: false,
+                color: ['#070C67'],
+                textStyle: {  //文字颜色
+                    color: '#000'
+                }
+            },
+            series: [   //图表生成的数据内容数组
+                {
+                    name: '中国',
+                    type: 'map',   //图表类型为地图
+                    mapType: 'china',   //地图类型中国地图，
+                    selectedMode: 'single', //选中模式，可以设置多选模式和单选，不能选择则删除删除属性
+                    hoverable: false,   //悬浮是否高亮
+                    itemStyle: {
+                        //地图样式
+                        borderColor: '#71D1FF', //地图边界颜色
+                        areaColor: '#070C67',  //地图颜色
+                        color: "#070C67"
+                    },
+                    emphasis: {   //地图选中时样式
+                        label: {
+                            show: true,
+                            textStyle: {
+                                color: 'red' //选中时区域名字颜色
+                            },
+                            formatter: "{b}",
+                        },
+                        itemStyle: {
+                            areaColor: '#71D1FF', //选中时颜色
+                            color: "#71D1FF"
+                        }
+                    },
+                    data: [
+                        {
+                            name: '广东', value: "2",
+                        },
+                        { name: '江西', value: "3" },
+                        { name: '湖北', value: "1" }
+                    ],
+                    geoCoord: {   //每个城市对应的经纬度
+                        '上海': [121.4648, 31.2891]
+                    }
+                }
+            ]
+        }
+        myChart.setOption(option, true);
+        console.log(echarts)
+        myChart.on("click", function (param) {
+            var name = param.name;//获得选中的城市
+            selectCity(name)
+
+        });
+        // 选择城市
+        var selectCity = function (name) {
+            var script = document.createElement("script");
+            script.src = "./province/" + cityData[name] + ".js";
+            document.body.appendChild(script)
+            script.onload = () => {
+                option.series[0].mapType = name;
+                myChart.setOption(option, true);
+                backBtn.style.display = "block";
+            }
+        }
+        backBtn.onclick = () => {
+            option.series[0].mapType = 'china';
+            myChart.setOption(option, true);
+            backBtn.style.display = "none";
+        }
+    </script>
+</body>
+
+</html>
